@@ -7,7 +7,7 @@ MAP = 1;
 
 %% Trajectory
 
-wpts = [1,0;0.5,1;1,2;2,3;0,5];
+wpts = [1,0;0.5,1;1,2;1.5,3;0.5,5];
 
 t = 0: (length(wpts)-1);
 
@@ -140,7 +140,8 @@ while(~Reachflag)
     % comes from vertex gen
 %     % Defining necessary stuff for simgen
     bt = [0.5;0.5;0]; %barrycentric coordinates of a reference point
-    uR = [2; 2]; % initial guess will be updated after every simplex.
+    d = [-0.2; 1];
+    uR = 6/sqrt(2)*(d/norm(d)); % initial guess will be updated after every simplex.
     z = zeta; % the reference direction (updated by bigger code)
     v1 = Finp(:, 1);
     v2 = Finp(:, 2);
@@ -183,3 +184,8 @@ end
 
 
 % s0+deltas
+
+save("S.mat", "S");
+x = trajx;
+y = trajy;
+save("trej.mat", "x", "y");

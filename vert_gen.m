@@ -8,7 +8,7 @@ a = [-0.2;
     -0.1];
 u_max = 6/sqrt(2);
 del_L = 1;    % weight for L to keep it important
-del_d = 1;
+del_d = 3;
 del_u = 1/u_max;
 
 N = [0 1; -1 0];
