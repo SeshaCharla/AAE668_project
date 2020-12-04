@@ -47,10 +47,8 @@ U2 = [xU2;yU2];
 
 
 % unsafe region Obs
-% xo = [-1 0 0 3 3 -1 -1]; 
-% yo = [-3 -3 0 0 1 1 -3];
-xo = [0 0 0 0 0 0 0];
-yo = [0 0 0 0 0 0 0];
+xo = [-1 0 0 3 3 -1 -1]; 
+yo = [-3 -3 0 0 1 1 -3];
 O = [xo;yo];
 
 
@@ -225,25 +223,26 @@ while(~Reachflag)
     
     % comes from vertex gen
 %     % Defining necessary stuff for simgen
-    bt = [0.5;0.5;0]; %barrycentric coordinates of a reference point
-    uR = [2; 2]; % initial guess will be updated after every simplex.
-    z = zeta; % the reference direction (updated by bigger code)
-    v1 = Finp(:, 1);
-    v2 = Finp(:, 2);
-    v31 = v3_new(:, 1);
-    v32 = v3_new(:, 2);
-    S(i) = sim_gen(v1, v2, v31,v32, z, uR, bt);  %need to add the case where v1 = v31 
-    [K, g] = ctrl_in(S(i));
-    uR = K*(S(i).v*bt) + g;
-    % exit facet always v2 v3
-    Finp = [S(i).v(:, 2), S(i).v(:, 3)]
-    i = i+1;
+%     bt = [0.5;0.5;0]; %barrycentric coordinates of a reference point
+%     uR = [2; 2]; % initial guess will be updated after every simplex.
+%     z = zeta; % the reference direction (updated by bigger code)
+%     v1 = Finp(:, 1);
+%     v2 = Finp(:, 2);
+%     v31 = v3_new(:, 1);
+%     v32 = v3_new(:, 2);
+%     S(i) = sim_gen(v1, v2, v31,v32, z, uR, bt);  %need to add the case where v1 = v31 
+%     [K, g] = ctrl_in(S(i));
+%     uR = K*(S(i).v*bt) + g;
+%     % exit facet always v2 v3
+%     Finp = [S(i).v(:, 2), S(i).v(:, 3)]
+%     i = i+1;
     
     % v3_new = [v31  v32]
-   % Finp = [v1, v3_new(:, 2)];
+    Finp = [v1, v32];
         if MAP == 1
         %mapshow(trajx_inp,trajy_inp,'DisplayType','line','Marker','.')
-        %mapshow(Finp(1,:),Finp(2,:),'DisplayType','line','Marker','.')
+        %mapshow(v3i(1,:),v3i(2,:),'DisplayType','line','Marker','.')
+        %mapshow([S(i-1).v(1,:), S(i-1).v(1,1)],[S(i-1).v(2,:), S(i-1).v(1,1)],'DisplayType','line','Marker','.')
         mapshow([S(i-1).v(1,:), S(i-1).v(1,1)],[S(i-1).v(2,:), S(i-1).v(1,1)],'DisplayType','line','Marker','.')
     end
 

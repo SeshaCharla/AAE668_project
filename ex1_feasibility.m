@@ -37,28 +37,15 @@ cvx_begin sdp
 variable u1
 variable u2
 variable u3
-
-minimize((norm(.25 - [u1,u2,u3]*[.5;.5;0]) + norm([u1,u2,u3])))
-
 % invariance conditions
 h2'*(A*v1 + B*u1 +c) <= 0
 h3'*(A*v1 + B*u1 +c) <= 0
 h3'*(A*v2 + B*u2 +c) <= 0
 h2'*(A*v3 + B*u3 +c) <= 0
-
 % flow conditions
 h1'*(A*v2 + B*u2 +c) >= 0
 h1'*(A*v3 + B*u3 +c) >= 0
-
-u1 <= 1;
-u2 <= 1;
-u3 <= 1;
-u1 >= -1;
-u2 >= -1;
-u3 >= -1;
-
+% control input limits
+kron([1;-1], eye(3))*[u1; u2; u3] <= ones(6,1)
 cvx_end
 
-u1 
-u2
-u3
