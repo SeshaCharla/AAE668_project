@@ -47,7 +47,7 @@ qf = [z'* A*(v1-v3);
       (z'*B)'];
 rf = z'*(A*v3 + a);
 
-cvx_begin sdp
+cvx_begin sdp quiet
 variable u1(2,1)
 variable u2(2,1)
 variable u3(2,1)
