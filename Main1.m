@@ -246,8 +246,6 @@ while(~Reachflag)
     % v3_new = [v31  v32]
    % Finp = [v1, v3_new(:, 2)];
     if MAP == 1
-        %mapshow(trajx_inp,trajy_inp,'DisplayType','line','Marker','.')
-        %mapshow(Finp(1,:),Finp(2,:),'DisplayType','line','Marker','.')
         mapshow([S(k-1).v(1,:), S(k-1).v(1,1)],[S(k-1).v(2,:), S(k-1).v(2,1)],'DisplayType','line','Marker','.')
     end
 
@@ -261,12 +259,27 @@ while(~Reachflag)
 
 end
 
-
-    if MAP == 1
-        mapshow(trajx_inp,trajy_inp,'DisplayType','point','Marker','o')
-        mapshow(v3i(1,:),v3i(2,:),'DisplayType','point','Marker','o')
-        mapshow(v3_new(1,:),v3_new(2,:),'DisplayType','point','Marker','o')
-    end
-
+% plot script
+%generate MAP
+if MAP == 1
+    figure;
+    hold on
+    grid on
+    axis equal
+    axis([-1 3 -.5 5])
+    title('Phase plot','Interpreter','latex');
+    xlabel('$x_1$','Interpreter','latex')
+    ylabel('$x_2$','Interpreter','latex')
+    box on
+    
+    patch(xg,yg,'g',"FaceColor",[0.4660 0.6740 0.1880],"FaceAlpha",.5,'LineStyle','none')
+    % trajectory
+    plot(x1,y1,'o',trajx,trajy,':.');
+    
+end
 
 % s0+deltas
+save("S.mat", "S");
+x = trajx;
+y = trajy;
+save("trej.mat", "x", "y");

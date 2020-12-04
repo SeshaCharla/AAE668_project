@@ -40,21 +40,7 @@ xg = [-10 10  10 -10];
 yg = [3.5 3.5 6 6];
 G = [xg;yg];
 
-%generate MAP
-if MAP == 1
-    figure;
-    hold on
-    grid on
-    axis equal
-    axis([-1 3 -.5 5])
-    title('Phase plot','Interpreter','latex');
-    xlabel('$x_1$','Interpreter','latex')
-    ylabel('$x_2$','Interpreter','latex')
-    box on
 
-    % trajectory
-    plot(x1,y1,'o',trajx,trajy,':.');
-end
 % Test intersection on random lines
 % mapshow(xo,yo,'DisplayType','polygon','LineStyle','none')
 % mapshow(xU1,yU1,'DisplayType','polygon','LineStyle','none')
@@ -177,14 +163,27 @@ while(~Reachflag)
 end
 
     if MAP == 1
-        mapshow(trajx_inp,trajy_inp,'DisplayType','point','Marker','o')
-        mapshow(v3i(1,:),v3i(2,:),'DisplayType','point','Marker','o')
-        mapshow(v3_new(1,:),v3_new(2,:),'DisplayType','point','Marker','o')
+       
     end
 
 
 % s0+deltas
-
+%generate MAP
+if MAP == 1
+    figure;
+    hold on
+    grid on
+    axis equal
+    axis([-1 3 -.5 5])
+    title('Phase plot','Interpreter','latex');
+    xlabel('$x_1$','Interpreter','latex')
+    ylabel('$x_2$','Interpreter','latex')
+    box on
+    
+    patch(xg,yg,'g',"FaceColor",[0.4660 0.6740 0.1880],"FaceAlpha",.5,'LineStyle','none')
+    % trajectory
+    plot(x1,y1,'o',trajx,trajy,':.');
+end
 save("S.mat", "S");
 x = trajx;
 y = trajy;
