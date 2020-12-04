@@ -6,9 +6,11 @@ close all
 MAP = 1;
 
 %% Trajectory
-wpts = [1,0;1,1;1,2;1,3;1,4];
+
+wpts = [1,0;0.5,1;1,2;2,3;0,5];
 
 t = 0: (length(wpts)-1);
+
 points = wpts;
 x1 = points(:,1);
 y1 = points(:,2);
@@ -88,7 +90,7 @@ v2 = v2_0;
 Finp = [v1 v2];
 
 % trajectory gen parameter
-ds = 0.5; % in secs
+ds = 0.25; % in secs
 
 Reachflag = false;
 k = 1;
@@ -123,11 +125,13 @@ while(~Reachflag)
     % inital guesses for v3
     v3_new = [];
     for i = 1:2
+
         vi = Finp(:,i);
         v3i = vi + 2*zeta;
         li = [vi v3i];
         v3i_new = v3i;
         v3_new = [v3_new v3i_new];
+        
     end
 
 
@@ -153,12 +157,12 @@ while(~Reachflag)
     uR = K*(S(k).v*bt) + g;
     % exit facet always v2 v3
     Finp = [S(k).v(:, 2), S(k).v(:, 3)];
-    i = i+1;
+    i = i + 1;
     k = k + 1;
    % v3_new = [v31  v32]
    % Finp = [v1, v3_new(:, 2)];
     if MAP == 1
-        mapshow([S(k-1).v(1,:), S(k-1).v(1,1)],[S(k-1).v(2,:), S(k-1).v(1,1)],'DisplayType','line','Marker','.')
+        mapshow([S(k-1).v(1,:), S(k-1).v(1,1)],[S(k-1).v(2,:), S(k-1).v(2,1)],'DisplayType','line','Marker','.')
     end
 
     % termination flag

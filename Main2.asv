@@ -6,7 +6,7 @@ close all
 MAP = 1;
 
 %% Trajectory
-wpts = [1,0;1,1;1,2;1,3;1,4];
+wpts = [1,0;1.25,2;2,4;3,4];
 
 t = 0: (length(wpts)-1);
 points = wpts;
@@ -33,44 +33,9 @@ traj_par = spline(t , [[slope0;slope0] points' [slopeF;slopeF]]);
 
 %% Map - No bounds
 
-% unsafe region 1
-xU1 = [-4 -2.5 0 -4 -4];
-yU1 = [1 3 5 5 1];
-U1 = [xU1;yU1];
-
-
-% unsafe region 2
-xU2 = [-.5 2.5 5 5 -.5];
-yU2 = [-5 -3 0 -5 -5];
-U2 = [xU2;yU2];
-
-
-
-% unsafe region Obs
-% xo = [-1 0 0 3 3 -1 -1]; 
-% yo = [-3 -3 0 0 1 1 -3];
-xo = [0 0 0 0 0 0 0];
-yo = [0 0 0 0 0 0 0];
-O = [xo;yo];
-
-
-% Bounds 1
-xb1 = [-4 -4 -.5];
-yb1 = [1 -5 -5];
-L1 = [xb1;yb1];
-
-
-% Bounds 2
-xb2 = [0 5 5];
-yb2 = [5 5 0];
-L2 = [xb2 ; xb2];
-
-% all Unsafe regions
-U = struct('x',{xU1,xU2,xo,xb1,xb2},'y',{yU1,yU2,yo,yb1,yb2});
-
 % Goal 
-xg = [3 3 5 5 3];
-yg = [3 5 5 3 3];
+xg = [-10 10  10 -10];
+yg = [3.5 3.5 6 6];
 G = [xg;yg];
 
 %generate MAP
@@ -79,39 +44,14 @@ if MAP == 1
     hold on
     grid on
     axis equal
-    axis([-4 5 -5 5])
+    axis([-1 3 -.5 5])
     title('Phase plot','Interpreter','latex');
     xlabel('$x_1$','Interpreter','latex')
     ylabel('$x_2$','Interpreter','latex')
     box on
 
-    % final region
-    xf = [3 3 5 5];
-    yf = [3 5 5 3];
-    patch(xf,yf,'g',"FaceColor",[0.4660 0.6740 0.1880],'LineStyle','none')
-
-
-    %initial set
-    xp3 = [0 3 0];
-    yp3 = [0 0 -3];
-    patch(xp3,yp3,'r','FaceColor', [0 0.4470 0.7410],'LineStyle','none')
-
     % trajectory
     plot(x1,y1,'o',trajx,trajy,':.');
-
-    % obstacle
-    xo = [-1 0 0 3 3 -1]; 
-    yo = [-3 -3 0 0 1 1];
-    patch(xo,yo,'r','FaceColor',[0.4940 0.1840 0.5560],'LineStyle','none')
-
-    % Unsafe Region
-    xp1 = [-4 -2.5 0 -4];
-    yp1 = [1 3 5 5];
-    % patch(xp1,yp1,'r','FaceColor',[0.6350 0.0780 0.1840],'LineStyle','none')
-
-    xp2 = [-.5 2.5 5 5;xp1]';
-    yp2 = [-5 -3 0 -5;yp1]';
-    patch(xp2,yp2,'r','FaceColor',[0.6350 0.0780 0.1840],'LineStyle','none')
 end
 % Test intersection on random lines
 % mapshow(xo,yo,'DisplayType','polygon','LineStyle','none')
@@ -132,8 +72,8 @@ end
 %% Initialization
 
 % initial vertex 
-v1_0 = [0;-3];
-v2_0 = [3;0];
+v1_0 = [0;0];
+v2_0 = [2;0];
 
 % initial facet
 Finp_0 = [v1_0 v2_0];
@@ -157,12 +97,9 @@ i = 1; %simplex chanin index
 %-----------------------------
 % Solve RCP for the first simplex whose exit facet becomes the starting
 % point of the algorithm
-S(i).v = [0, 0, -3;
-          0, -3, 0];
-S(i).u = [0, 0, 0;
-          0, 0, 0];
+
 %------------------------------
-i = i+1;
+i = 1;
 
 while(~Reachflag)
     % Simplex Entry Point
@@ -190,38 +127,11 @@ while(~Reachflag)
         v3i = vi + 2*zeta;
         li = [vi v3i];
         v3i_new = v3i;
-        minv = 100;
-        for j = 1:length(U)
-            [Ujx,Ujy] = polyxpoly(li(1,:),li(2,:),U(j).x,U(j).y);
-            if ~isempty(Ujx)
-                Uj = [Ujx(1),Ujy(1)]';
-                dj = sum((Uj-vi).^2).^0.5;
-                if (minv > dj) 
-    %             minj = j;
-                    if (k==1 && dj==0)
-                        %ignore
-                    else
-                        minv = dj;
-                        v3i_new = Uj;
-                    end
-                    
-                end  
-            end
-
-        end
-        
-    %     if ~isempty(v3i_new)
-    %         mapshow(tempv3x(1),tempv3y(1),'DisplayType','point','Marker','+')
-    %     end
         v3_new = [v3_new v3i_new];
     end
 
-    k = k + 1;
-    
-    
 
     
-   
     
     % comes from vertex gen
 %     % Defining necessary stuff for simgen
@@ -232,19 +142,23 @@ while(~Reachflag)
     v2 = Finp(:, 2);
     v31 = v3_new(:, 1);
     v32 = v3_new(:, 2);
-    S(i) = sim_gen(v1, v2, v31,v32, z, uR, bt);  %need to add the case where v1 = v31 
-    [K, g] = ctrl_in(S(i));
-    uR = K*(S(i).v*bt) + g;
-    % exit facet always v2 v3
-    Finp = [S(i).v(:, 2), S(i).v(:, 3)]
-    i = i+1;
     
-    % v3_new = [v31  v32]
+    if mod(k,2)==0
+        S(k) = vert_gen(v1, v2, v31, z, uR, bt);
+    else
+        S(k) = vert_gen(v2, v1, v32, z, uR, bt);
+    end
+    
+    [K, g] = ctrl_in(S(k));
+    uR = K*(S(k).v*bt) + g;
+    % exit facet always v2 v3
+    Finp = [S(k).v(:, 2), S(k).v(:, 3)];
+    i = i+1;
+    k = k + 1;
+   % v3_new = [v31  v32]
    % Finp = [v1, v3_new(:, 2)];
-        if MAP == 1
-        %mapshow(trajx_inp,trajy_inp,'DisplayType','line','Marker','.')
-        %mapshow(Finp(1,:),Finp(2,:),'DisplayType','line','Marker','.')
-        mapshow([S(i-1).v(1,:), S(i-1).v(1,1)],[S(i-1).v(2,:), S(i-1).v(1,1)],'DisplayType','line','Marker','.')
+    if MAP == 1
+        mapshow([S(k-1).v(1,:), S(k-1).v(1,1)],[S(k-1).v(2,:), S(k-1).v(1,1)],'DisplayType','line','Marker','.')
     end
 
     % termination flag
@@ -256,7 +170,6 @@ while(~Reachflag)
     end
 
 end
-
 
     if MAP == 1
         mapshow(trajx_inp,trajy_inp,'DisplayType','point','Marker','o')

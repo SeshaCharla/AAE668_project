@@ -7,7 +7,7 @@ MAP = 1;
 
 %% Trajectory
 wpts = [1,-1;3,-1;4,1;4,4];
-wpts = [1,-1;1,-3;-1,-4;-3,-3;-3,-1;-2.5,1.8;-.5,3;1.5,4;4,4];
+% wpts = [1,-1;1,-3;-1,-4;-3,-3;-3,-1;-2.5,1.8;-.5,3;1.5,4;4,4];
 t = 0: (length(wpts)-1);
 points = wpts;
 x1 = points(:,1);
@@ -216,8 +216,6 @@ while(~Reachflag)
         v3_new = [v3_new v3i_new];
     end
 
-    k = k + 1;
-    
     
 
     
@@ -232,19 +230,25 @@ while(~Reachflag)
     v2 = Finp(:, 2);
     v31 = v3_new(:, 1);
     v32 = v3_new(:, 2);
-    S(i) = sim_gen(v1, v2, v31,v32, z, uR, bt);  %need to add the case where v1 = v31 
-    [K, g] = ctrl_in(S(i));
-    uR = K*(S(i).v*bt) + g;
+    if mod(k,2)==0
+        S(k) = vert_gen(v1, v2, v31, z, uR, bt);
+    else
+        S(k) = vert_gen(v2, v1, v32, z, uR, bt);
+    end
+    [K, g] = ctrl_in(S(k));
+    uR = K*(S(k).v*bt) + g;
     % exit facet always v2 v3
-    Finp = [S(i).v(:, 2), S(i).v(:, 3)]
-    i = i+1;
+    Finp = [S(k).v(:, 2), S(k).v(:, 3)]
+
+    
+    k = k + 1;
     
     % v3_new = [v31  v32]
    % Finp = [v1, v3_new(:, 2)];
-        if MAP == 1
+    if MAP == 1
         %mapshow(trajx_inp,trajy_inp,'DisplayType','line','Marker','.')
         %mapshow(Finp(1,:),Finp(2,:),'DisplayType','line','Marker','.')
-        mapshow([S(i-1).v(1,:), S(i-1).v(1,1)],[S(i-1).v(2,:), S(i-1).v(1,1)],'DisplayType','line','Marker','.')
+        mapshow([S(k-1).v(1,:), S(k-1).v(1,1)],[S(k-1).v(2,:), S(k-1).v(2,1)],'DisplayType','line','Marker','.')
     end
 
     % termination flag
