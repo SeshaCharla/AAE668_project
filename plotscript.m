@@ -5,7 +5,7 @@ h = figure(2);
 hold on
 grid on
 axis equal
-axis([-1 3 -.5 5])
+axis([-.5 4 -.5 4])
 title('Phase plot','Interpreter','latex','FontSize',18);
 xlabel('$x_1$','Interpreter','latex','FontSize',18)
 ylabel('$x_2$','Interpreter','latex','FontSize',18)
