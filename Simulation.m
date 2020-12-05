@@ -9,7 +9,7 @@ tf = 400;
 n = 10*tf;
 t = linspace(0, tf, n);
 xx0 = 0:.2:2;
-filename = 'testAnimated.gif';
+filename = 'testAnimated_traj2.gif';
 
 for i = 1:length(xx0)
     x0 = [xx0(i) 0];
